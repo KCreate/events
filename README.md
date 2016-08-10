@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/KCreate/events.svg?branch=master)](https://travis-ci.org/KCreate/events)
+
 # Events
 
 Super basic event emitter written for crystal-lang.
