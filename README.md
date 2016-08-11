@@ -47,7 +47,7 @@ You should see "daaamn" pop up in your console
 
 ## Usage
 
-The [test suite](spec/Events_spec.cr) usually has all the examples you need for using this. I usually forget to update the README so just look there.
+The [test suite](spec/Events_spec.cr) has all the examples you need. I usually forget to update the README so just look there.
 
 You first need a class that will emit some events. Add the module to your class like this:
 ```crystal
