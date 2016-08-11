@@ -1,3 +1,5 @@
+[<img src="images/logo.png" width="200">](https://github.com/KCreate/events)
+
 [![Build Status](https://travis-ci.org/KCreate/events.svg?branch=master)](https://travis-ci.org/KCreate/events)
 
 # Events
@@ -149,6 +151,11 @@ leonard.gotosleep # ... nothing will be printed
 ## Test
 
 Run `crystal spec` to run the test suite.
+
+## Todos
+- Allow passing arguments to callbacks
+- Allow the usage of subclasses of `Event`
+- Add docs to a public website
 
 ## Contributing
 
