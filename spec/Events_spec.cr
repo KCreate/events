@@ -10,7 +10,7 @@ describe Events do
   it "Adds a callback to the list" do
     test = Test.new
     test.add_event "something"
-    test.on "something", do
+    test.on "something" do
       # Ignore me
     end
 
@@ -25,7 +25,7 @@ describe Events do
 
     test = Test.new
     test.add_event "something"
-    test.on "something", do
+    test.on "something" do
       wasCalled = true
     end
     test.invoke_event "something"
@@ -40,13 +40,13 @@ describe Events do
 
     test = Test.new
     test.add_event "something"
-    test.on "something", do
+    test.on "something" do
       calledHandlers[0] = true
     end
-    test.on "something", do
+    test.on "something" do
       calledHandlers[1] = true
     end
-    test.on "something", do
+    test.on "something" do
       calledHandlers[2] = true
     end
     test.invoke_event "something"
