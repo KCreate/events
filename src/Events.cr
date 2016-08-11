@@ -1,6 +1,7 @@
 require "./Events/*"
 
 # When included into a class, this adds the functionality to subscribe to, invoke and manage events and their corresponding handlers
+#
 # You can also use this as a global event manager
 #
 # Usage example:
@@ -29,6 +30,7 @@ require "./Events/*"
 #
 # You don't _have_ to explicitly add every event via *add_event*,
 # but it's best-practice to register all events in your initialize function so you can see which class has which events
+#
 # You can also pass an array to *add_event* to batch-register events
 module Events
 
@@ -40,9 +42,8 @@ module Events
     @__events
   end
 
-  # Event
-  #
   # Saves all callbacks for a given event
+  #
   # Also adds the functionality to invoke all methods
   class Event
     getter handlers
@@ -50,6 +51,7 @@ module Events
     @handlers = [] of ->
 
     # Add a new handler
+    #
     # Returns a proc that removes the handler from the event
     def add_handler(block)
       @handlers << block
@@ -61,7 +63,9 @@ module Events
     end
 
     # Removes a handler from the event
+    #
     # You need to pass the exact same proc as you did for add_handler
+    #
     # This just uses the equality check performed by Array#delete
     def remove_handler(block)
       @handlers.delete block
@@ -80,6 +84,7 @@ module Events
   end
 
   # Add an event with a *name*
+  #
   # If there are some handlers for that event, this won't have any effect
   #
   # This method is actually purely optional, as it will be called anyway when someone adds a handler and the event doesn't exist
@@ -139,6 +144,7 @@ module Events
   end
 
   # Add a handler to the event *name*
+  #
   # If the event doesn't exist, it will be created
   def on(name : String, &block : ->)
     if !event_exists name
@@ -149,6 +155,7 @@ module Events
   end
 
   # Add a handler to all specified events
+  #
   # If the event doesn't exist, it will be created
   #
   # ```
