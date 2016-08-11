@@ -109,4 +109,27 @@ describe Events do
 
     test.__events.keys.should eq(["this", "is", "a", "test"])
   end
+
+  it "invoke_event can invoke multiple events, in the correct order" do
+
+    # The initial string
+    initial = "Hello World"
+    tmp = ""
+    result = "b84ace3d700a5e778c5e07da8ea3745f"
+
+    test = Test.new
+    test.add_event ["event1", "event2", "event3"]
+    test.on "event1" do
+      tmp = Crypto::MD5.hex_digest initial
+    end
+    test.on "event2" do
+      tmp = Crypto::MD5.hex_digest tmp
+    end
+    test.on "event3" do
+      tmp = Crypto::MD5.hex_digest tmp
+    end
+    test.invoke_event ["event1", "event2", "event3"]
+
+    tmp.should eq(result)
+  end
 end
