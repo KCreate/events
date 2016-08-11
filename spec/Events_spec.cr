@@ -101,4 +101,12 @@ describe Events do
 
     timesCalled.should eq(2)
   end
+
+  it "add_event can add multiple events" do
+
+    test = Test.new
+    test.add_event ["this", "is", "a", "test"]
+
+    test.__events.keys.should eq(["this", "is", "a", "test"])
+  end
 end
