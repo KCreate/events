@@ -9,6 +9,7 @@ end
 module Events
 
   # All saved events and their callback-procs are stored in this instance variable
+  getter __events
   @__events = {} of String => Event
 
   # Event
@@ -25,6 +26,7 @@ module Events
     def add_handler(block)
       @handlers << block
 
+      # Return a proc that removes the handler again
       ->{
         @handlers.delete block
       }
@@ -51,7 +53,7 @@ module Events
 
   # Add an event with name *name*
   def add_event(name : String)
-    @__events[name] = Event.new name
+    @__events[name] = Event.new
   end
 
   # Removes an event by *name*
