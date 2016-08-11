@@ -1,16 +1,44 @@
 require "./Events/*"
 
-# Adds the @__events instance variable to the current class
-module Events
-  @__events = {} of String => Event
-end
-
-# Adds the `Event` class
+# When included into a class, this adds the functionality to subscribe to, invoke and manage events and their corresponding handlers
+# You can also use this as a global event manager
+#
+# Usage example:
+# ```
+# require "events"
+#
+# # Some class
+# class Person
+#   include Events
+#
+#   def initialize
+#     add_event "fart"
+#   end
+#
+#   def fart
+#     invoke_event "fart"
+#   end
+# end
+#
+# leonard = Person.new
+# leonard.on "fart", do
+#   puts "daaamn"
+# end
+# leonard.fart
+# ```
+#
+# You don't _have_ to explicitly add every event via *add_event*,
+# but it's best-practice to register all events in your initialize function so you can see which class has which events
+# You can also pass an array to *add_event* to batch-register events
 module Events
 
   # All saved events and their callback-procs are stored in this instance variable
-  getter __events
   @__events = {} of String => Event
+
+  # :nodoc:
+  def __events
+    @__events
+  end
 
   # Event
   #
@@ -50,14 +78,16 @@ module Events
       end
     end
   end
-end
 
-# Adds public functions for adding, removing, invoking and listening events
-module Events
-
-  # Add an event with name *name*
+  # Add an event with a *name*
+  # If there are some handlers for that event, this won't have any effect
   def add_event(name : String)
-    @__events[name] = Event.new
+
+    # If the event already exists, it is assumed that is has some handlers
+    # Simply ignore the call
+    if !event_exists name
+      @__events[name] = Event.new
+    end
   end
 
   # Removes an event by *name*
