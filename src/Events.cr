@@ -169,9 +169,11 @@ module Events
   # end
   # ```
   def on(eventlist : Array(String), &block : ->)
+    removeHandlers = [] of ->
     eventlist.each do |name|
-      on name, block
+      removeHandlers << on(name, &block)
     end
+    removeHandlers
   end
 
   # Checks if a given event with *name* exists

@@ -132,4 +132,36 @@ describe Events do
 
     tmp.should eq(result)
   end
+
+  it "on can add handlers to multiple events" do
+
+    # Keep track how often each handler was called
+    handlersCalled = [0, 0, 0]
+
+    test = Test.new
+    test.add_event ["event1", "event2", "event3"]
+    test.on ["event1", "event2"] do
+      handlersCalled[0] += 1
+      handlersCalled[1] += 1
+    end
+    test.on ["event2", "event3"] do
+      handlersCalled[1] += 1
+      handlersCalled[2] += 1
+    end
+    test.invoke_event ["event1", "event2", "event3"]
+
+    handlersCalled.should eq([2, 4, 2])
+  end
+
+  it "batch-adding handlers returns an array of procs to return the handlers" do
+
+    test = Test.new
+    test.add_event ["event1", "event2"]
+    removeHandlers = test.on ["event1", "event2"] do
+      # ignore
+    end
+    removeHandlers[0].call
+
+    test.__events["event1"].handlers.size.should eq(0)
+  end
 end
