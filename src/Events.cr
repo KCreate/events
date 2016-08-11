@@ -148,6 +148,32 @@ module Events
     @__events[name].add_handler block
   end
 
+  # Add a handler to all specified events
+  # If the event doesn't exist, it will be created
+  #
+  # ```
+  # on ["event1", "event2", "event3"] do
+  #   puts "stuff"
+  # end
+  #
+  # # Is the same as writing:
+  #
+  # on "event1" do
+  #   puts "stuff"
+  # end
+  # on "event2" do
+  #   puts "stuff"
+  # end
+  # on "event3" do
+  #   puts "stuff"
+  # end
+  # ```
+  def on(eventlist : Array(String), &block : ->)
+    eventlist.each do |name|
+      on name, block
+    end
+  end
+
   # Checks if a given event with *name* exists
   def event_exists(name : String)
     @__events.has_key? name
