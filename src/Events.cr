@@ -79,8 +79,18 @@ module Events
     end
   end
 
+  # Add an event for each string inside *eventlist*
+  # This is just a wrapper around `Events#add_event(name)`
+  def add_event(eventlist : Array(String))
+    eventlist.each do |name|
+      add_event name
+    end
+  end
+
   # Add an event with a *name*
   # If there are some handlers for that event, this won't have any effect
+  #
+  # This method is actually purely optional, as it will be called anyway when someone adds a handler and the event doesn't exist
   def add_event(name : String)
 
     # If the event already exists, it is assumed that is has some handlers
