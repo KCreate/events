@@ -41,8 +41,12 @@ module Events
 
     # Invokes all handlers
     def invoke
-      @handlers.each do |handler|
-        handler.call
+
+      # Check if there are any handlers available
+      if @handlers.size > 0
+        @handlers.each do |handler|
+          handler.call
+        end
       end
     end
   end
