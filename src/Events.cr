@@ -79,14 +79,6 @@ module Events
     end
   end
 
-  # Add an event for each string inside *eventlist*
-  # This is just a wrapper around `Events#add_event(name)`
-  def add_event(eventlist : Array(String))
-    eventlist.each do |name|
-      add_event name
-    end
-  end
-
   # Add an event with a *name*
   # If there are some handlers for that event, this won't have any effect
   #
@@ -100,6 +92,13 @@ module Events
     end
   end
 
+  # Add an event for each string inside *eventlist*
+  def add_event(eventlist : Array(String))
+    eventlist.each do |name|
+      add_event name
+    end
+  end
+
   # Removes an event by *name*
   def remove_event(name : String)
     @__events.delete name
@@ -109,6 +108,13 @@ module Events
   def invoke_event(name : String)
     if event_exists name
       @__events[name].invoke
+    end
+  end
+
+  # Invoke a list of events, in a specified order
+  def invoke_event(eventlist : Array(String))
+    eventlist.each do |name|
+      invoke_event name
     end
   end
 
