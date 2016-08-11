@@ -81,4 +81,24 @@ describe Events do
     # All handlers, except handler 2, should've been called
     calledHandlers.should eq([true, false, true])
   end
+
+  it "Events can be called with no handlers receiving them" do
+
+    # Keep track of 1 handler
+    timesCalled = 0
+
+    test = Test.new
+    test.add_event "something"
+    removeHandler = test.on "something" do
+      timesCalled += 1
+    end
+    test.invoke_event "something"
+    test.invoke_event "something"
+
+    removeHandler.call
+
+    test.invoke_event "something"
+
+    timesCalled.should eq(2)
+  end
 end
