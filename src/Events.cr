@@ -93,6 +93,16 @@ module Events
   end
 
   # Add an event for each string inside *eventlist*
+  #
+  # ```
+  # add_event ["event1", "event2", "event3"]
+  #
+  # # Is the same as writing:
+  #
+  # add_event "event1"
+  # add_event "event2"
+  # add_event "event3"
+  # ```
   def add_event(eventlist : Array(String))
     eventlist.each do |name|
       add_event name
@@ -112,6 +122,16 @@ module Events
   end
 
   # Invoke a list of events, in a specified order
+  #
+  # ```
+  # invoke_event ["event1", "event2", "event3"]
+  #
+  # # Is the same as writing:
+  #
+  # invoke_event "event1"
+  # invoke_event "event2"
+  # invoke_event "event3"
+  # ```
   def invoke_event(eventlist : Array(String))
     eventlist.each do |name|
       invoke_event name
