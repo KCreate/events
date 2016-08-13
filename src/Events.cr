@@ -54,7 +54,7 @@ module Events
   # returns a proc that removes the *block*
   #
   # Creates the event if it doesn't exist already
-  def on(name : String, &block : ->)
+  def on(name : String, &block )
     if !event_exists name
       register_event name
     end
@@ -62,7 +62,7 @@ module Events
     @__events[name].add_handler block
   end
 
-  def on(list : Array(String), &block : ->)
+  def on(list : Array(String), &block)
     removeHandlers = [] of ->
 
     list.each do |name|
@@ -75,7 +75,7 @@ module Events
   end
 
   # Removes a *block* from an event given by *name*
-  def remove_handler(name : String, &block : ->)
+  def remove_handler(name : String, &block)
     if event_exists name
       @__events[name].remove_handler block
     end
