@@ -42,47 +42,6 @@ module Events
     @__events
   end
 
-  # Saves all callbacks for a given event
-  #
-  # Also adds the functionality to invoke all methods
-  class Event
-    getter handlers
-
-    @handlers = [] of ->
-
-    # Add a new handler
-    #
-    # Returns a proc that removes the handler from the event
-    def add_handler(block)
-      @handlers << block
-
-      # Return a proc that removes the handler again
-      ->{
-        @handlers.delete block
-      }
-    end
-
-    # Removes a handler from the event
-    #
-    # You need to pass the exact same proc as you did for add_handler
-    #
-    # This just uses the equality check performed by Array#delete
-    def remove_handler(block)
-      @handlers.delete block
-    end
-
-    # Invokes all handlers
-    def invoke
-
-      # Check if there are any handlers available
-      if @handlers.size > 0
-        @handlers.each do |handler|
-          handler.call
-        end
-      end
-    end
-  end
-
   # Add an event with a *name*
   #
   # If there are some handlers for that event, this won't have any effect
