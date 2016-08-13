@@ -2,15 +2,23 @@ require "./*"
 
 module Events
 
-  # Describes a single handler
-  class Handler
+  # Abstract Handler
+  abstract class Handler(T)
 
-    def initialize(@block : ->)
+    # :nodoc:
+    getter block
+    @block : Proc(T)
+
+    def initialize(@block)
     end
 
-    # Run the saved handler
-    def call
-      @block.call
+    # Run the handler
+    def call(*args)
+      @block.call *args
     end
+  end
+
+  # A regular Handler
+  class RegularHandler < Handler(Nil)
   end
 end

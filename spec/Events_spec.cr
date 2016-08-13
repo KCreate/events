@@ -9,7 +9,7 @@ end
 describe Events do
   it "Adds a callback to the list" do
     test = Test.new
-    test.add_event "something"
+    test.register_event "something"
     test.on "something" do
       # Ignore me
     end
@@ -24,7 +24,7 @@ describe Events do
     wasCalled = false
 
     test = Test.new
-    test.add_event "something"
+    test.register_event "something"
     test.on "something" do
       wasCalled = true
     end
@@ -39,7 +39,7 @@ describe Events do
     calledHandlers = [false, false, false]
 
     test = Test.new
-    test.add_event "something"
+    test.register_event "something"
     test.on "something" do
       calledHandlers[0] = true
     end
@@ -61,7 +61,7 @@ describe Events do
     calledHandlers = [false, false, false]
 
     test = Test.new
-    test.add_event "something"
+    test.register_event "something"
     test.on "something" do
       calledHandlers[0] = true
     end
@@ -88,7 +88,7 @@ describe Events do
     timesCalled = 0
 
     test = Test.new
-    test.add_event "something"
+    test.register_event "something"
     removeHandler = test.on "something" do
       timesCalled += 1
     end
@@ -105,7 +105,7 @@ describe Events do
   it "add_event can add multiple events" do
 
     test = Test.new
-    test.add_event ["this", "is", "a", "test"]
+    test.register_event ["this", "is", "a", "test"]
 
     test.__events.keys.should eq(["this", "is", "a", "test"])
   end
@@ -118,7 +118,7 @@ describe Events do
     result = "b84ace3d700a5e778c5e07da8ea3745f"
 
     test = Test.new
-    test.add_event ["event1", "event2", "event3"]
+    test.register_event ["event1", "event2", "event3"]
     test.on "event1" do
       tmp = Crypto::MD5.hex_digest initial
     end
@@ -139,7 +139,7 @@ describe Events do
     handlersCalled = [0, 0, 0]
 
     test = Test.new
-    test.add_event ["event1", "event2", "event3"]
+    test.register_event ["event1", "event2", "event3"]
     test.on ["event1", "event2"] do
       handlersCalled[0] += 1
       handlersCalled[1] += 1
@@ -153,15 +153,16 @@ describe Events do
     handlersCalled.should eq([2, 4, 2])
   end
 
-  it "batch-adding handlers returns an array of procs to return the handlers" do
+  it "batch-adding handlers returns a proc that removes all added handlers" do
 
     test = Test.new
-    test.add_event ["event1", "event2"]
+    test.register_event ["event1", "event2"]
     removeHandlers = test.on ["event1", "event2"] do
       # ignore
     end
-    removeHandlers[0].call
+    removeHandlers.call
 
     test.__events["event1"].handlers.size.should eq(0)
+    test.__events["event2"].handlers.size.should eq(0)
   end
 end

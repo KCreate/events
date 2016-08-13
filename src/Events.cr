@@ -1,149 +1,84 @@
 require "./Events/*"
 
-# When included into a class, this adds the functionality to subscribe to, invoke and manage events and their corresponding handlers
-#
-# You can also use this as a global event manager
-#
-# Usage example:
-# ```
-# require "events"
-#
-# # Some class
-# class Person
-#   include Events
-#
-#   def initialize
-#     add_event "fart"
-#   end
-#
-#   def fart
-#     invoke_event "fart"
-#   end
-# end
-#
-# leonard = Person.new
-# leonard.on "fart", do
-#   puts "daaamn"
-# end
-# leonard.fart
-# ```
-#
-# You don't _have_ to explicitly add every event via *add_event*,
-# but it's best-practice to register all events in your initialize function so you can see which class has which events
-#
-# You can also pass an array to *add_event* to batch-register events
 module Events
 
-  # All saved events and their callback-procs are stored in this instance variable
-  @__events = {} of String => Event
-
   # :nodoc:
-  def __events
-    @__events
-  end
+  getter __events
+  @__events = {} of String => RegularEvent
 
-  # Add an event with a *name*
-  #
-  # If there are some handlers for that event, this won't have any effect
-  #
-  # This method is actually purely optional, as it will be called anyway when someone adds a handler and the event doesn't exist
-  def add_event(name : String)
-
-    # If the event already exists, it is assumed that is has some handlers
-    # Simply ignore the call
+  # Registers a new event, gives it a *name* and returns it.
+  # If the event already exists, it's returned
+  def register_event(name : String)
     if !event_exists name
-      @__events[name] = Event.new
+      @__events[name] = RegularEvent.new name
+    end
+
+    @__events[name]
+  end
+
+  def register_event(list : Array(String))
+    list.each do |name|
+      register_event name
     end
   end
 
-  # Add an event for each string inside *eventlist*
-  #
-  # ```
-  # add_event ["event1", "event2", "event3"]
-  #
-  # # Is the same as writing:
-  #
-  # add_event "event1"
-  # add_event "event2"
-  # add_event "event3"
-  # ```
-  def add_event(eventlist : Array(String))
-    eventlist.each do |name|
-      add_event name
-    end
-  end
-
-  # Removes an event by *name*
-  def remove_event(name : String)
-    @__events.delete name
-  end
-
-  # Invoke a given event by *name*
-  def invoke_event(name : String)
+  # Unregisters the the event given by *name*
+  def unregister_event(name : String)
     if event_exists name
-      @__events[name].invoke
+      @__events.delete name
     end
   end
 
-  # Invoke a list of events, in a specified order
-  #
-  # ```
-  # invoke_event ["event1", "event2", "event3"]
-  #
-  # # Is the same as writing:
-  #
-  # invoke_event "event1"
-  # invoke_event "event2"
-  # invoke_event "event3"
-  # ```
-  def invoke_event(eventlist : Array(String))
-    eventlist.each do |name|
-      invoke_event name
+  # Invoke an event given by *name*,
+  # returns an Int32 with the amount of handlers run,
+  # false if the event didn't exist
+  def invoke_event(name : String, *args)
+    if !event_exists name
+      false
     end
+
+    @__events[name].invoke *args
   end
 
-  # Add a handler to the event *name*
+  def invoke_event(list : Array(String), *args)
+    calledTimes = [] of Int32
+
+    list.each_with_index do |name, index|
+      calledTimes << invoke_event name, *args
+    end
+
+    calledTimes
+  end
+
+  # Add a *block* to the given *event*,
+  # returns a proc that removes the *block*
   #
-  # If the event doesn't exist, it will be created
+  # Creates the event if it doesn't exist already
   def on(name : String, &block : ->)
     if !event_exists name
-      add_event name
+      register_event name
     end
 
     @__events[name].add_handler block
   end
 
-  # Add a handler to all specified events
-  #
-  # If the event doesn't exist, it will be created
-  #
-  # ```
-  # on ["event1", "event2", "event3"] do
-  #   puts "stuff"
-  # end
-  #
-  # # Is the same as writing:
-  #
-  # on "event1" do
-  #   puts "stuff"
-  # end
-  # on "event2" do
-  #   puts "stuff"
-  # end
-  # on "event3" do
-  #   puts "stuff"
-  # end
-  # ```
-  def on(eventlist : Array(String), &block : ->)
+  def on(list : Array(String), &block : ->)
     removeHandlers = [] of ->
-    eventlist.each do |name|
-      removeHandlers << on(name, &block)
+
+    list.each do |name|
+      removeHandlers << on name, &block
     end
-    removeHandlers
+
+    ->{
+      removeHandlers.each &.call
+    }
   end
 
-  # Checks if a given event with *name* exists
-  def event_exists(name : String)
-    @__events.has_key? name
+  # Removes a *block* from an event given by *name*
+  def remove_handler(name : String, &block : ->)
+    if event_exists name
+      @__events[name].remove_handler block
+    end
   end
+
 end
