@@ -5,6 +5,12 @@ class Test
   include Events
 end
 
+enum Foo
+  Bar
+  Baz
+  Moo
+end
+
 # Basic functionality tests
 describe Events do
   it "Adds a callback to the list" do
@@ -164,5 +170,29 @@ describe Events do
 
     test.__events["event1"].handlers.size.should eq(0)
     test.__events["event2"].handlers.size.should eq(0)
+  end
+
+  it "allows using other types as event names" do
+
+    called1 = false
+    called2 = false
+
+    test = Test.new
+    test.register_event 32
+    test.register_event Foo::Bar
+
+    test.on 32 do
+      called1 = true
+    end
+
+    test.on Foo::Bar do
+      called2 = true
+    end
+
+    test.invoke_event 32
+    test.invoke_event Foo::Bar
+
+    called1.should be_true
+    called2.should be_true
   end
 end
