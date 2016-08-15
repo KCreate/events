@@ -28,14 +28,18 @@ module Events
 
     # Add a new *block* to the event
     #
-    # This will create a new handler and pass it to #add_handler(handler)
+    # Returns a proc that removes the handler from the event
     def add_handler(block : ->)
       handler = H.new block
-      add_handler handler
+      @handlers << handler
+
+      ->{
+        remove_handler handler
+      }
     end
 
     # Removes a *handler* from the event
-    def remove_handler(handler : H)
+    private def remove_handler(handler : H)
       @handlers.delete handler
     end
 
