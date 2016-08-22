@@ -211,4 +211,18 @@ describe Events do
 
     called.should be_false
   end
+
+  it "can invoke an event that doesn't exist" do
+    raised = false
+
+    test = Test.new
+    begin
+      test.invoke_event "test"
+    rescue ex
+      puts ex
+      raised = true
+    end
+
+    raised.should be_false
+  end
 end

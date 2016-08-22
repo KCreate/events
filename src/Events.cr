@@ -40,7 +40,7 @@ module Events
     name = to_string name
 
     if !event_exists name
-      false
+      return 0
     end
 
     @__events[name].invoke *args
