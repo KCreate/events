@@ -9,7 +9,6 @@ module Events
   # Registers a new event, gives it a *name* and returns it.
   # If the event already exists, it's returned
   def register_event(name)
-
     name = to_string name
 
     if !event_exists name
@@ -86,9 +85,8 @@ module Events
   def clear_handlers(name)
     name = to_string name
 
-    event = @__events[name]?
-    if event.is_a? Event
-      event.clear_handlers
+    if event_exists name
+      @__events[name].clear_handlers
     end
   end
 
