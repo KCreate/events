@@ -195,4 +195,20 @@ describe Events do
     called1.should be_true
     called2.should be_true
   end
+
+  it "clears all handlers from an event" do
+    called = false
+
+    test = Test.new
+    test.register_event "test"
+    test.on "test" do
+      called = true
+    end
+
+    test.clear_handlers "test"
+
+    test.invoke_event "test"
+
+    called.should be_false
+  end
 end

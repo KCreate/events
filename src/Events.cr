@@ -83,6 +83,15 @@ module Events
     }
   end
 
+  def clear_handlers(name)
+    name = to_string name
+
+    event = @__events[name]?
+    if event.is_a? Event
+      event.clear_handlers
+    end
+  end
+
   # Removes a *block* from an event given by *name*
   def remove_handler(name, &block)
     name = to_string name

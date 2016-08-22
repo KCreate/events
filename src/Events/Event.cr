@@ -38,6 +38,11 @@ module Events
       }
     end
 
+    # Clears all handlers
+    def clear_handlers
+      @handlers.clear
+    end
+
     # Removes a *handler* from the event
     private def remove_handler(handler : H)
       @handlers.delete handler
