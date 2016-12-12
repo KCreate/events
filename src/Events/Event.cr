@@ -8,11 +8,8 @@ module Events
     # :nodoc:
     getter handlers
     getter name
-
-
-    @name : String
-
-    def initialize(@name)
+    
+    def initialize(@name : String)
       @handlers = [] of H
     end
 
