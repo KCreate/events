@@ -9,10 +9,11 @@ module Events
     getter handlers
     getter name
 
-    @handlers = [] of H
+
     @name : String
 
     def initialize(@name)
+      @handlers = [] of H
     end
 
     # Add a new *handler* to the event
